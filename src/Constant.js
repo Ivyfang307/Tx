@@ -1,2 +1,3 @@
 export const LIGHT_GOLD='#e2dfb9';
-export const LIGHTER_GOLD='#d7dec2';
+
+export const ETHERSCAN_API_KEY='C2QA6ZE7R62G99QADSCEDXI3YH9AMR36TM';
