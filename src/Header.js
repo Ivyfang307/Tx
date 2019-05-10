@@ -12,7 +12,9 @@ export default class App extends Component<Props> {
       screen:props.screen,
       balance:0,
       address:props.address,
-      currency:'$',
+      currency:'USD',
+        currencyRate:1,
+        hideModal:true,
         openSelector:false
     };
 
@@ -38,29 +40,43 @@ export default class App extends Component<Props> {
   componentDidUpdate(prevProps, prevState){
     if(prevProps){
       if(this.state.screen !== this.props.screen){
+
         this.setState({screen:this.props.screen});
       }
       if(this.state.address !== this.props.address){
         this.setState({address:this.props.address});
       }
     }
-
   }
 
-  selectCurrency=()=>{
-    console.log('select currency');
-      this.setState({openSelector:true});
+  selectCurrency=(option)=>{
+    console.log('select currency '+JSON.stringify(option));
+      const request_url = "https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH&tsyms="+option.value+"&api_key="+Constant.CURRENCY_API_KEY;
+      return fetch(request_url)
+          .then((response) => response.json())
+          .then((responseJson) => {
+              let calculateBalance=parseInt(this.state.balance)*parseInt(responseJson.ETH[option.value]);
+
+              this.setState({
+                  currency:option.value,
+                  balance: calculateBalance
+              });
+          })
+          .catch((error) => {
+              console.error(error);
+          });
+
 
   }
 
   render() {
       const currencyList = [
-          { key: 0,label: 'US Dollar' },
-          { key: 1,label: 'Singapore Dollar' },
-          { key: 2,label: 'Japanese Yen' },
-          { key: 3,label: 'Korean Won' },
-          { key: 4,label: 'British Sterling Pound' },
-          { key: 5,label: 'Chinese Yuan' },
+          { key: 0,value:'USD',label: 'USD Dollar' },
+          { key: 1,value:'SGD',label: 'Singapore Dollar' },
+          { key: 2,value:'JPN',label: 'Japanese Yen' },
+          { key: 3,value:'dd',label: 'Korean Won' },
+          { key: 4,value:'ss',label: 'British Sterling Pound' },
+          { key: 5,value:'CNY',label: 'Chinese Yuan' },
       ];
 
       return (
@@ -68,21 +84,39 @@ export default class App extends Component<Props> {
        style={{flex:1,alignItems:'center',justifyContent:'center'}}>
        <Text style={Styles.styles.titleText}>My Portfolio</Text>
        {this.state.screen ?
-           <TouchableOpacity onPress={this.selectCurrency}>
-             <Text style={Styles.styles.text}>
-               {this.state.currency+this.state.balance}</Text>
-           </TouchableOpacity>
+           <View>
+           <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+           <Text style={Styles.styles.text}>{this.state.currency+this.state.balance}</Text>
+               {this.state.hideModal?
+                   <TouchableOpacity onPress={()=>{ this.setState({openSelector: true,hideModal:false}) }}>
+                       <Text style={Styles.styles.text}>∨</Text>
+                   </TouchableOpacity>
+                   :
+                   <ModalSelector
+                       visible={this.state.openSelector}
+                       data={currencyList}
+                       initValue={'∨'}
+                       selectTextStyle={Styles.styles.text}
+                       onChange={(option)=>{this.selectCurrency(option)}}
+                       overlayStyle={{ justifyContent: 'flex-end'}}
+                       selectStyle={{borderWidth:0,}}
+                       cancelText={'Cancel'}
+                       cancelTextStyle={{color:'rgba(0,118,255,0.9)',fontWeight: 'bold'}}
+                       onModalClose={() => {
+                           this.setState({hideModal: true});}
+                       }
+                   />
+               }
 
-       :
+           </View>
+
+           </View>
+
+
+           :
            <Text style={Styles.styles.text}>Enter an Ethereum address to get start</Text>
        }
-         <ModalSelector
-             visible={this.state.openSelector}
-             data={currencyList}
-             initValue={this.state.currency+this.state.balance}
-             initValueTextStyle={{color:'#fff'}}
-             style={{borderRadius:100,color:'#fff'}}
-             onChange={(option)=>{ alert(`${option.label} (${option.key}) nom nom nom`) }} />
+
 
      </View>
 

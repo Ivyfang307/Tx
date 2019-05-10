@@ -64,8 +64,8 @@ export default class TransactionDetails extends Component<Props> {
           </Text>
 
       </View>
-      <View style={{width:10}}>
-          <Text style={{color:'#fff'}}>></Text>
+      <View style={{width:20}}>
+          <Text style={{color:'#fff'}}>〉</Text>
       </View>
         </View>
 
