@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Platform, TextInput, Text, View, StyleSheet,TouchableOpacity} from 'react-native';
 import * as Constant from './Constant';
 import * as Styles from './Style';
-
+import ModalSelector from 'react-native-modal-selector'
 
 export default class App extends Component<Props> {
   constructor(props) {
@@ -12,7 +12,8 @@ export default class App extends Component<Props> {
       screen:props.screen,
       balance:0,
       address:props.address,
-      currency:'$'
+      currency:'$',
+        openSelector:false
     };
 
   }
@@ -47,11 +48,22 @@ export default class App extends Component<Props> {
   }
 
   selectCurrency=()=>{
-    console.log('select currency')
+    console.log('select currency');
+      this.setState({openSelector:true});
+
   }
 
   render() {
-    return (
+      const currencyList = [
+          { key: 0,label: 'US Dollar' },
+          { key: 1,label: 'Singapore Dollar' },
+          { key: 2,label: 'Japanese Yen' },
+          { key: 3,label: 'Korean Won' },
+          { key: 4,label: 'British Sterling Pound' },
+          { key: 5,label: 'Chinese Yuan' },
+      ];
+
+      return (
      <View
        style={{flex:1,alignItems:'center',justifyContent:'center'}}>
        <Text style={Styles.styles.titleText}>My Portfolio</Text>
@@ -64,6 +76,13 @@ export default class App extends Component<Props> {
        :
            <Text style={Styles.styles.text}>Enter an Ethereum address to get start</Text>
        }
+         <ModalSelector
+             visible={this.state.openSelector}
+             data={currencyList}
+             initValue={this.state.currency+this.state.balance}
+             initValueTextStyle={{color:'#fff'}}
+             style={{borderRadius:100,color:'#fff'}}
+             onChange={(option)=>{ alert(`${option.label} (${option.key}) nom nom nom`) }} />
 
      </View>
 
