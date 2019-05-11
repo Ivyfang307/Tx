@@ -30,12 +30,30 @@ export default class TransactionDetails extends Component<Props> {
 
   }
 
+    dollarFormat =(str)=>{
+        console.log('dolloar format '+str)
+        if(str.toString().length >=4){
+            console.log('dolloar format 1 '+str)
+
+            return (str +'').replace(/.(?=(?:.{3})+$)/g,'$&,');}
+        else{
+            console.log('dolloar format else')
+
+            return str
+        }
+
+    }
+    showTransactionDetails=()=>{
+      console.log('show transaction details ')
+    }
+
 
     render() {
          console.log('address '+this.state.address)
         // console.log('transaction '+JSON.stringify(this.state.transaction))
     return(
-      <View style={{flex:1,width:400,flexDirection:'row'}}>
+      <TouchableOpacity style={{flex:1,width:400,flexDirection:'row'}}
+      onPress={this.showTransactionDetails}>
          <View style={{height:'100%',width:80,alignItems:'center',justifyContent:'center'}}>
              <View style={{width:60,height:60,borderRadius:30,backgroundColor:Constant.LIGHT_GOLD,alignItems:'center',justifyContent:'center'}}>
                  <Text style={{color:'#fff'}}>ETH</Text>
@@ -44,7 +62,7 @@ export default class TransactionDetails extends Component<Props> {
       <View style={{flex:1,width:200,alignItems:'flex-start',justifyContent:'flex-start'}}>
           <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
                   <Text style={{color:'#fff'}}>
-                      {this.state.transaction.value}</Text>
+                      {(this.state.transaction.value/1000000000000000000)+' ETH'}</Text>
               <View style={{flex:1}}></View>
                   <Text style={{color:'#fff'}}>
                       { moment(moment.unix(this.state.transaction.timeStamp).format('L')).fromNow()}
@@ -67,7 +85,7 @@ export default class TransactionDetails extends Component<Props> {
       <View style={{width:20}}>
           <Text style={{color:'#fff'}}>〉</Text>
       </View>
-        </View>
+        </TouchableOpacity>
 
     );
   }

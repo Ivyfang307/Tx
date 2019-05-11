@@ -15,7 +15,9 @@ export default class App extends Component<Props> {
       currency:'USD',
         currencyRate:1,
         hideModal:true,
-        openSelector:false
+        openSelector:false,
+        exchangedBalance:0,
+        dollarSign:'$'
     };
 
   }
@@ -26,15 +28,25 @@ export default class App extends Component<Props> {
     return fetch(request_url)
         .then((response) => response.json())
         .then((responseJson) => {
-          this.setState({
-            balance: responseJson.result,
-          });
+            let balance= parseInt(responseJson.result)/(1000000000000000000);
+            const request_currency_url = "https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH&tsyms=USD&api_key="+Constant.CURRENCY_API_KEY;
+            return fetch(request_currency_url)
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    let exchangedBalance=parseInt(balance)*parseInt(responseJson.ETH['USD']);
+
+                    this.setState({
+                        balance: balance,
+                        exchangedBalance: exchangedBalance
+                    });
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
         })
         .catch((error) => {
           console.error(error);
         });
-
-
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -55,11 +67,12 @@ export default class App extends Component<Props> {
       return fetch(request_url)
           .then((response) => response.json())
           .then((responseJson) => {
-              let calculateBalance=parseInt(this.state.balance)*parseInt(responseJson.ETH[option.value]);
+              let exchangedBalance=parseInt(this.state.balance)*parseInt(responseJson.ETH[option.value]);
 
               this.setState({
+                  dollarSign:option.dollarSign,
                   currency:option.value,
-                  balance: calculateBalance
+                  exchangedBalance: exchangedBalance
               });
           })
           .catch((error) => {
@@ -69,14 +82,28 @@ export default class App extends Component<Props> {
 
   }
 
+  dollarFormat =(str)=>{
+      console.log('dolloar format '+str)
+      if(str.toString().length >=4){
+          console.log('dolloar format 1 '+str)
+
+          return (str +'').replace(/.(?=(?:.{3})+$)/g,'$&,');}
+      else{
+          console.log('dolloar format else')
+
+          return str
+      }
+
+      }
+
   render() {
       const currencyList = [
-          { key: 0,value:'USD',label: 'USD Dollar' },
-          { key: 1,value:'SGD',label: 'Singapore Dollar' },
-          { key: 2,value:'JPN',label: 'Japanese Yen' },
-          { key: 3,value:'dd',label: 'Korean Won' },
-          { key: 4,value:'ss',label: 'British Sterling Pound' },
-          { key: 5,value:'CNY',label: 'Chinese Yuan' },
+          { key: 0,dollarSign:'$',value:'USD',label: 'USD Dollar' },
+          { key: 1,dollarSign:'$',value:'SGD',label: 'Singapore Dollar' },
+          { key: 2,dollarSign:'¥',value:'JPY',label: 'Japanese Yen' },
+          { key: 3,dollarSign:'₩',value:'KRW',label: 'Korean Won' },
+          { key: 4,dollarSign:'£',value:'GBP',label: 'British Sterling Pound' },
+          { key: 5,dollarSign:'¥',value:'CNY',label: 'Chinese Yuan' },
       ];
 
       return (
@@ -86,7 +113,7 @@ export default class App extends Component<Props> {
        {this.state.screen ?
            <View>
            <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-           <Text style={Styles.styles.text}>{this.state.currency+this.state.balance}</Text>
+           <Text style={Styles.styles.text}>{this.state.dollarSign+this.dollarFormat(this.state.exchangedBalance)}</Text>
                {this.state.hideModal?
                    <TouchableOpacity onPress={()=>{ this.setState({openSelector: true,hideModal:false}) }}>
                        <Text style={Styles.styles.text}>∨</Text>

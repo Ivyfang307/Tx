@@ -9,27 +9,45 @@ export default class App extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
-      address:'0x2c1ba59d6f58433fb1eaee7d20b26ed83bda51a3',
+        // address:null,
+      address:'0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae',
       transactionList:null,
-        screen:'main'
+        screen:'main',
+        addressError:false
     };
   }
 
   searchAddress=()=>{
     console.log('search address');
-    const request_url = "http://api.etherscan.io/api?module=account&action=txlistinternal&address="+this.state.address+"&startblock=0&endblock=2702578&sort=asc&apikey="+Constant.ETHERSCAN_API_KEY;
-    return fetch(request_url)
-        .then((response) => response.json())
-        .then((responseJson) => {
+    if(this.state.address){
+        const request_url = "http://api.etherscan.io/api?module=account&action=txlistinternal&address="+this.state.address+"&startblock=0&endblock=2702578&sort=asc&apikey="+Constant.ETHERSCAN_API_KEY;
+        return fetch(request_url)
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log('transaction list '+JSON.stringify(responseJson))
 
-            this.setState({
-              transactionList: responseJson.result,
-                screen:'transactionList'
+                if(responseJson.status==="1"){
+                    this.setState({
+                        transactionList: responseJson.result,
+                        screen:'transactionList',
+                        addressError:false
+                    });
+
+                }
+                else{
+                    this.setState({addressError:true});
+                }
+
+            })
+            .catch((error) => {
+                console.error(error);
+                this.setState({addressError:true});
             });
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+    }
+    else{
+      this.setState({addressError:true});
+    }
+
 
 
   }
@@ -48,6 +66,7 @@ export default class App extends Component<Props> {
                           value={this.state.address}
                           placeholder={'Ethereum address'}
                       />
+                      {this.state.addressError?<Text style={{color:'red'}}>Please Enter a valid address</Text>:null}
                   </View>
                   <TouchableOpacity onPress={this.searchAddress}>
                       <Text style={Styles.styles.text}>Continue</Text>
