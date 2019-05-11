@@ -1,93 +1,67 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text,Image, View,TextInput,TouchableOpacity,FlatList} from 'react-native';
-import * as Constant from './Constant';
+import {Text, View, TouchableOpacity} from 'react-native';
 import * as Styles from './Style';
 import moment from 'moment';
 
 export default class TransactionDetails extends Component<Props> {
-  constructor(props) {
-    super(props);
-    this.state = {
-        transaction:props.transaction,
-        address:props.address
+    constructor(props) {
+        super(props);
+        this.state = {
+            transaction: props.transaction,
+            address: props.address
+        };
+    }
 
-    };
-  }
+    componentDidMount() {
+    }
 
-  componentDidMount(){
-  }
-
-  componentDidUpdate(prevProps, prevState){
-      if(prevProps){
-          if(this.state.transaction !== this.props.transaction){
-              console.log('different transaction  ');
-              this.setState({transaction:this.props.transaction});
-          }
-          if(this.state.address !== this.props.address){
-              this.setState({address:this.props.address});
-          }
-      }
-
-  }
-
-    dollarFormat =(str)=>{
-        console.log('dolloar format '+str)
-        if(str.toString().length >=4){
-            console.log('dolloar format 1 '+str)
-
-            return (str +'').replace(/.(?=(?:.{3})+$)/g,'$&,');}
-        else{
-            console.log('dolloar format else')
-
-            return str
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps) {
+            if (this.state.transaction !== this.props.transaction) {
+                console.log('different transaction  ');
+                this.setState({transaction: this.props.transaction});
+            }
+            if (this.state.address !== this.props.address) {
+                this.setState({address: this.props.address});
+            }
         }
-
-    }
-    showTransactionDetails=()=>{
-      console.log('show transaction details ')
     }
 
+    showTransactionDetails = () => {
+        console.log('show transaction details ')
+    }
 
     render() {
-         console.log('address '+this.state.address)
-        // console.log('transaction '+JSON.stringify(this.state.transaction))
-    return(
-      <TouchableOpacity style={{flex:1,width:400,flexDirection:'row'}}
-      onPress={this.showTransactionDetails}>
-         <View style={{height:'100%',width:80,alignItems:'center',justifyContent:'center'}}>
-             <View style={{width:60,height:60,borderRadius:30,backgroundColor:Constant.LIGHT_GOLD,alignItems:'center',justifyContent:'center'}}>
-                 <Text style={{color:'#fff'}}>ETH</Text>
-             </View>
-         </View>
-      <View style={{flex:1,width:200,alignItems:'flex-start',justifyContent:'flex-start'}}>
-          <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-                  <Text style={{color:'#fff'}}>
-                      {(this.state.transaction.value/1000000000000000000)+' ETH'}</Text>
-              <View style={{flex:1}}></View>
-                  <Text style={{color:'#fff'}}>
-                      { moment(moment.unix(this.state.transaction.timeStamp).format('L')).fromNow()}
-                  </Text>
+        return (
+            <TouchableOpacity style={Styles.styles.transactionWrapper}
+                              onPress={this.showTransactionDetails}>
+                    <View style={Styles.styles.circleWrapper}>
+                        <Text style={{color: '#fff'}}>ETH</Text>
+                    </View>
+                <View style={{flex: 1,alignItems: 'flex-start', justifyContent: 'center'}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                        <Text style={{color: '#fff'}}>
+                            {(this.state.transaction.value / 1000000000000000000) + ' ETH'}</Text>
+                        <View style={{flex: 1}}></View>
+                        <Text style={{color: '#fff'}}>
+                            {moment(moment.unix(this.state.transaction.timeStamp).format('L')).fromNow()+' 〉 '}
+                        </Text>
 
-          </View>
-          <View>
-              <Text style={{color:'#fff'}}>
-              {this.state.transaction.from===this.state.address?
-              'SENT TO':'RECEIVED FROM'}
-              </Text>
-          </View>
-          <Text style={{color:'#fff'}} numberOfLines={1} ellipsizeMode={'tail'} >
-              {this.state.transaction.from===this.state.address?
-                  this.state.transaction.to:this.state.transaction.from}
+                    </View>
+                        <Text style={{color: '#fff'}}>
+                            {this.state.transaction.from === this.state.address ?
+                                'SENT TO' : 'RECEIVED FROM'}
+                        </Text>
+                    <Text style={{color: '#fff'}} numberOfLines={1} ellipsizeMode={'tail'}>
+                        {this.state.transaction.from === this.state.address ?
+                            this.state.transaction.to : this.state.transaction.from}
 
-          </Text>
+                    </Text>
 
-      </View>
-      <View style={{width:20}}>
-          <Text style={{color:'#fff'}}>〉</Text>
-      </View>
-        </TouchableOpacity>
+                </View>
+            </TouchableOpacity>
 
-    );
-  }
+        );
+    }
 }
 

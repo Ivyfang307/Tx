@@ -83,7 +83,7 @@ export default class App extends Component<Props> {
                             goBack={this.goToMain}/>
                 </View>
                 <View
-                    style={{flex: 1,alignItems: 'center', justifyContent: 'flex-start'}}>
+                    style={{flex:1,width:'100%',alignItems: 'center', justifyContent: 'flex-start'}}>
                     {screen}
                 </View>
             </View>

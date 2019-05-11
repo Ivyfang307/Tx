@@ -18,7 +18,9 @@ export const styles = StyleSheet.create({
         height: 40,
         borderWidth:1,
         backgroundColor:'rgba(225,225,209,0.3)',
-        borderColor: Constant.LIGHT_GOLD,textAlign: 'center', color: Constant.LIGHT_GOLD
+        borderColor: Constant.LIGHT_GOLD,
+        textAlign: 'center',
+        color: Constant.LIGHT_GOLD
     },
     warningText:{
         fontSize:15,
@@ -43,15 +45,25 @@ export const styles = StyleSheet.create({
     profileWrapper:{
         flex:1,
         width:'100%',
-        borderWidth:1,
-        borderColor: Constant.LIGHT_GOLD,
         alignItems: 'flex-start',
         justifyContent: 'flex-start'
 
     },
-    instructions: {
-        textAlign: 'center',
-        color: '#e2dfb9',
-        marginBottom: 5,
+    transactionWrapper:{
+        height: 80,
+        borderBottomWidth: 1,
+        borderBottomColor:Constant.LIGHT_GOLD,
+        flex: 1,
+        width: '100%',
+        flexDirection: 'row'
     },
+    circleWrapper:{
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: '#b0ac5d',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin:10
+    }
 });
