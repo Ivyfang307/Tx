@@ -152,13 +152,9 @@ export default class App extends Component<Props> {
            </View>
 
            </View>
-
-
            :
            <Text style={Styles.styles.text}>Enter an Ethereum address to get start</Text>
        }
-
-
      </View>
 
     );
