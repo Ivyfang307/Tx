@@ -96,6 +96,10 @@ export default class App extends Component<Props> {
 
       }
 
+    goBack=()=>{
+      this.props.goBack();
+
+    }
   render() {
       const currencyList = [
           { key: 0,dollarSign:'$',value:'USD',label: 'USD Dollar' },
@@ -107,9 +111,14 @@ export default class App extends Component<Props> {
       ];
 
       return (
-     <View
-       style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-       <Text style={Styles.styles.titleText}>My Portfolio</Text>
+     <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+         <View style={{width:400,borderColor:Constant.LIGHT_GOLD,flexDirection:'row',alignItems:'center',justifyContent:'flex-start'}}>
+             <TouchableOpacity onPress={this.goBack} style={{marginRight:30}}>
+                 <Text style={Styles.styles.text}>{'<Back'}</Text>
+             </TouchableOpacity>
+             <Text style={Styles.styles.titleText}>My Portfolio</Text>
+         </View>
+
        {this.state.screen ?
            <View>
            <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>

@@ -17,40 +17,40 @@ export default class App extends Component<Props> {
     };
   }
 
-  searchAddress=()=>{
-    console.log('search address');
-    if(this.state.address){
-        const request_url = "http://api.etherscan.io/api?module=account&action=txlistinternal&address="+this.state.address+"&startblock=0&endblock=2702578&sort=asc&apikey="+Constant.ETHERSCAN_API_KEY;
-        return fetch(request_url)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                console.log('transaction list '+JSON.stringify(responseJson))
+  searchAddress=()=> {
+      console.log('search address');
+      if (this.state.address) {
+          const request_url = "http://api.etherscan.io/api?module=account&action=txlistinternal&address=" + this.state.address + "&startblock=0&endblock=2702578&sort=asc&apikey=" + Constant.ETHERSCAN_API_KEY;
+          return fetch(request_url)
+              .then((response) => response.json())
+              .then((responseJson) => {
+                  console.log('transaction list ' + JSON.stringify(responseJson))
 
-                if(responseJson.status==="1"){
-                    this.setState({
-                        transactionList: responseJson.result,
-                        screen:'transactionList',
-                        addressError:false
-                    });
+                  if (responseJson.status === "1") {
+                      this.setState({
+                          transactionList: responseJson.result,
+                          screen: 'transactionList',
+                          addressError: false
+                      });
 
-                }
-                else{
-                    this.setState({addressError:true});
-                }
+                  } else {
+                      this.setState({addressError: true});
+                  }
 
-            })
-            .catch((error) => {
-                console.error(error);
-                this.setState({addressError:true});
-            });
-    }
-    else{
-      this.setState({addressError:true});
-    }
-
-
-
+              })
+              .catch((error) => {
+                  console.error(error);
+                  this.setState({addressError: true});
+              });
+      } else {
+          this.setState({addressError: true});
+      }
   }
+
+    goToMain=()=>{
+        this.setState({screen:'main'});
+    }
+
   render() {
       let screen=null;
       if(this.state.screen==='main'){
@@ -91,7 +91,8 @@ export default class App extends Component<Props> {
       <View style={Styles.styles.container}>
         <View style={{width:'100%',height:150,borderBottomWidth:1,borderBottomColor:Constant.LIGHT_GOLD,alignItems:'center',justifyContent:'center'}}>
      <Header screen={this.state.screen}
-     address={this.state.address}/>
+     address={this.state.address}
+             goBack={this.goToMain}/>
         </View>
           {screen}
       </View>
