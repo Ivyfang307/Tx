@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
+import {Text, View, TouchableOpacity,ActivityIndicator} from 'react-native';
 import * as Constant from './Constant';
 import * as Styles from './Style';
 import ModalSelector from 'react-native-modal-selector'
@@ -17,12 +17,14 @@ export default class App extends Component<Props> {
             hideModal: true,
             openSelector: false,
             exchangedBalance: 0,
-            dollarSign: '$'
+            dollarSign: '$',
+            loadBalance:false,
         };
 
     }
 
     componentDidMount = () => {
+        this.setState({loadBalance:true});
         const balance_url = "https://api.etherscan.io/api?module=account&action=balance&address=" + this.state.address + "&tag=latest&apikey=" + Constant.ETHERSCAN_API_KEY;
         return fetch(balance_url)
             .then((response) => response.json())
@@ -35,7 +37,8 @@ export default class App extends Component<Props> {
                         let exchangedBalance = parseInt(balance) * parseInt(responseJson.ETH['USD']);
                         this.setState({
                             balance: balance,
-                            exchangedBalance: exchangedBalance
+                            exchangedBalance: exchangedBalance,
+                            loadBalance:false
                         });
                     })
                     .catch((error) => {
@@ -59,6 +62,7 @@ export default class App extends Component<Props> {
     }
 
     selectCurrency = (option) => {
+        this.setState({loadBalance:true});
         const currency_url = "https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH&tsyms=" + option.value + "&api_key=" + Constant.CURRENCY_API_KEY;
         return fetch(currency_url)
             .then((response) => response.json())
@@ -68,7 +72,8 @@ export default class App extends Component<Props> {
                 this.setState({
                     dollarSign: option.dollarSign,
                     currency: option.value,
-                    exchangedBalance: exchangedBalance
+                    exchangedBalance: exchangedBalance,
+                    loadBalance:false
                 });
             })
             .catch((error) => {
@@ -115,9 +120,13 @@ export default class App extends Component<Props> {
 
                 {this.state.screen ?
                         <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            {this.state.loadBalance?
+                                <ActivityIndicator size="large" color={Constant.LIGHT_GOLD}/>
+                            :
                             <Text style={Styles.styles.text}>
-                                {this.state.dollarSign + this.dollarFormat(this.state.exchangedBalance)}
-                            </Text>
+                            {this.state.dollarSign + this.dollarFormat(this.state.exchangedBalance)}
+                                </Text>}
+
                             {this.state.hideModal ?
                                 <TouchableOpacity onPress={() => {
                                     this.setState({openSelector: true, hideModal: false})
