@@ -38,6 +38,15 @@ export const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 10,
         color:Constant.LIGHT_GOLD
+    },
+
+    profileWrapper:{
+        flex:1,
+        width:'100%',
+        borderWidth:1,
+        borderColor: Constant.LIGHT_GOLD,
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start'
 
     },
     instructions: {

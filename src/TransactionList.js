@@ -24,7 +24,6 @@ export default class TransactionList extends Component<Props> {
 
     }
 
-
   render() {
     return (
        <View
