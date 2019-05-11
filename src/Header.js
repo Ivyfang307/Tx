@@ -112,12 +112,17 @@ export default class App extends Component<Props> {
 
       return (
      <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+         {this.state.screen==='transactionList'?
          <View style={{width:400,borderColor:Constant.LIGHT_GOLD,flexDirection:'row',alignItems:'center',justifyContent:'flex-start'}}>
              <TouchableOpacity onPress={this.goBack} style={{marginRight:30}}>
-                 <Text style={Styles.styles.text}>{'<Back'}</Text>
-             </TouchableOpacity>
+                     <Text style={Styles.styles.text}>{'<Back'}</Text>
+                 </TouchableOpacity>
              <Text style={Styles.styles.titleText}>My Portfolio</Text>
          </View>
+             :
+             <Text style={Styles.styles.titleText}>My Portfolio</Text>
+
+         }
 
        {this.state.screen ?
            <View>
