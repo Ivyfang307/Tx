@@ -24,41 +24,48 @@ export default class App extends Component<Props> {
     }
 
     componentDidMount = () => {
+        this.getBalance();
+    }
+
+    getBalance=()=>{
         this.setState({loadBalance:true});
-        const balance_url = "https://api.etherscan.io/api?module=account&action=balance&address=" + this.state.address + "&tag=latest&apikey=" + Constant.ETHERSCAN_API_KEY;
+        const balance_url = "https://api.etherscan.io/api?module=account&action=balance&address=" + this.props.address + "&tag=latest&apikey=" + Constant.ETHERSCAN_API_KEY;
         return fetch(balance_url)
             .then((response) => response.json())
             .then((responseJson) => {
                 let balance = parseInt(responseJson.result) / (1000000000000000000);
-                const currency_url = "https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH&tsyms=USD&api_key=" + Constant.CURRENCY_API_KEY;
-                return fetch(currency_url)
-                    .then((response) => response.json())
-                    .then((responseJson) => {
-                        let exchangedBalance = parseInt(balance) * parseInt(responseJson.ETH['USD']);
-                        this.setState({
-                            balance: balance,
-                            exchangedBalance: exchangedBalance,
-                            loadBalance:false
-                        });
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
+        const currency_url = "https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH&tsyms=USD&api_key=" + Constant.CURRENCY_API_KEY;
+        return fetch(currency_url)
+            .then((response) => response.json())
+            .then((responseJson) => {
+                let exchangedBalance = parseInt(balance) * parseInt(responseJson.ETH['USD']);
+                this.setState({
+                    balance: balance,
+                    exchangedBalance: exchangedBalance,
+                    loadBalance:false
+                });
             })
             .catch((error) => {
                 console.error(error);
             });
-    }
+    })
+    .catch((error) => {
+            console.error(error);
+        });
 
+    }
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps) {
+        if(prevProps){
             if (this.state.screen !== this.props.screen) {
                 this.setState({screen: this.props.screen});
             }
             if (this.state.address !== this.props.address) {
+                console.log('change address')
                 this.setState({address: this.props.address});
+                this.getBalance();
             }
         }
+
     }
 
     selectCurrency = (option) => {
@@ -103,6 +110,8 @@ export default class App extends Component<Props> {
             {key: 5, dollarSign: '¥', value: 'CNY', label: 'Chinese Yuan'},
         ];
 
+        console.log('exchanaged balace '+this.state.exchangedBalance)
+
         return (
             <View style={{flex: 1,width:'100%',alignItems: 'center', justifyContent: 'center',}}>
                 {this.state.screen === 'transactionList' ?
@@ -118,7 +127,7 @@ export default class App extends Component<Props> {
                     <Text style={Styles.styles.titleText}>My Portfolio</Text>
                 }
 
-                {this.state.screen ?
+                {this.state.screen === 'transactionList'?
                         <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                             {this.state.loadBalance?
                                 <ActivityIndicator size="large" color={Constant.LIGHT_GOLD}/>

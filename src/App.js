@@ -9,8 +9,8 @@ export default class App extends Component<Props> {
     constructor(props) {
         super(props);
         this.state = {
-            // address:null,
-            address: '0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae',
+             address:null,
+            // address: '0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae',
             transactionList: null,
             screen: 'main',
             addressError: false
